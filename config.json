@@ -1,8 +1,8 @@
 {
   "computerName": "PC001",
   "users": [
-    {"username": "user1", "password": "Pass@123"},
-    {"username": "user2", "password": "Pass@123"}
+    {"username": "user1", "password": "Pass@123", "isAdmin": true},
+    {"username": "user2", "password": "Pass@123", "isAdmin": false}
   ],
   "apps": [
     "Mozilla.Firefox",
