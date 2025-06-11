@@ -1,0 +1,1 @@
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Xerthes/InstallWIndows/main/ConfigWindows.ps1" -OutFile "$env:TEMP\ConfigWindows.ps1"; powershell -ExecutionPolicy Bypass -File "$env:TEMP\ConfigWindows.ps1" -ConfigPath ".\config.json"
