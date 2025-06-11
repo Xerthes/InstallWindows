@@ -10,28 +10,35 @@ if (-Not (Test-Path $ConfigPath)) {
 $config = Get-Content $ConfigPath | ConvertFrom-Json
 
 # 2. Renommer l'ordinateur
-Write-Host "Changement du nom de l'ordinateur en $($config.computerName)..."
-Rename-Computer -NewName $config.computerName -Force -Restart:$false
+if ($config.renameComputer -eq $true -and $config.computerName) {
+    Write-Host "Changement du nom de l'ordinateur en $($config.computerName)..."
+    Rename-Computer -NewName $config.computerName -Force -Restart:$false
+} else {
+    Write-Host "Renommage du poste ignoré."
+}
 
 # 3. Création des utilisateurs
-foreach ($user in $config.users) {
-    $username = $user.username
-    $password = $user.password | ConvertTo-SecureString -AsPlainText -Force
-    $isAdmin = if ($user.isAdmin) { $true } else { $false }
+if ($config.createUsers -eq $true -and $config.users) {
+    foreach ($user in $config.users) {
+        $username = $user.username
+        $password = $user.password | ConvertTo-SecureString -AsPlainText -Force
+        $isAdmin = if ($user.isAdmin) { $true } else { $false }
 
-    if (-not (Get-LocalUser -Name $username -ErrorAction SilentlyContinue)) {
-        Write-Host "Création de l'utilisateur $username (Admin: $isAdmin)..."
-        New-LocalUser -Name $username -Password $password -FullName $username -Description "Utilisateur créé par script"
+        if (-not (Get-LocalUser -Name $username -ErrorAction SilentlyContinue)) {
+            Write-Host "Création de l'utilisateur $username (Admin: $isAdmin)..."
+            New-LocalUser -Name $username -Password $password -FullName $username -Description "Utilisateur créé par script"
 
-        # Ajout au groupe approprié
-        if ($isAdmin) {
-            Add-LocalGroupMember -Group "Administrators" -Member $username
+            if ($isAdmin) {
+                Add-LocalGroupMember -Group "Administrators" -Member $username
+            } else {
+                Add-LocalGroupMember -Group "Users" -Member $username
+            }
         } else {
-            Add-LocalGroupMember -Group "Users" -Member $username
+            Write-Host "L'utilisateur $username existe déjà, saut de la création."
         }
-    } else {
-        Write-Host "L'utilisateur $username existe déjà, saut de la création."
     }
+} else {
+    Write-Host "Création d'utilisateurs ignorée."
 }
 
 # 4. Installation des applications via winget
@@ -71,7 +78,6 @@ if (Test-Path $localSoftDir) {
 }
 
 # 6. Exécution du script Win11Debloat
-
 Write-Host "Téléchargement et exécution du script Win11Debloat..."
 if ($config.loadWin11Debloat) {
     $tempScriptPath = "$env:TEMP\Win11Debloat.ps1"
