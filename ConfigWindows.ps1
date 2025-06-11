@@ -73,10 +73,11 @@ if (Test-Path $localSoftDir) {
 # 6. Exécution du script Win11Debloat
 
 Write-Host "Téléchargement et exécution du script Win11Debloat..."
+if ($config.loadWin11Debloat) {
+    $tempScriptPath = "$env:TEMP\Win11Debloat.ps1"
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Raphire/Win11Debloat/main/Win11Debloat.ps1" -OutFile $tempScriptPath
 
-$tempScriptPath = "$env:TEMP\Win11Debloat.ps1"
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Raphire/Win11Debloat/main/Win11Debloat.ps1" -OutFile $tempScriptPath
-
-PowerShell -ExecutionPolicy Bypass -File $tempScriptPath
+    PowerShell -ExecutionPolicy Bypass -File $tempScriptPath
+}
 
 Write-Host "Configuration terminée. Pense à redémarrer la machine."
