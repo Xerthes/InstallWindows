@@ -1,4 +1,6 @@
 {
+  "renameComputer": true,
+  "createUsers": true,
   "computerName": "PC001",
   "loadWin11Debloat": true,
   "users": [
