@@ -1,0 +1,12 @@
+{
+  "computerName": "PC001",
+  "users": [
+    {"username": "user1", "password": "Pass@123"},
+    {"username": "user2", "password": "Pass@123"}
+  ],
+  "apps": [
+    "Mozilla.Firefox",
+    "Microsoft.VisualStudioCode",
+    "7zip.7zip"
+  ]
+}
